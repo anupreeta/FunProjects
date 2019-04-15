@@ -67,21 +67,20 @@ public class RockPaperScissors {
         }
     }
 
-    private final Random random = new Random() ;
+    private final Random random = new Random();
 
     Stream<Move> moves() {
-        return Stream.generate( () -> Move.values()[ random.nextInt( Move.values().length ) ] ) ;
+        return Stream.generate( () -> Move.values()[random.nextInt( Move.values().length )]);
     }
 
-    Stream<PlayerMove> player( String name ) {
-        return moves().map( ( m ) -> new PlayerMove( name, m ) ) ;
+    Stream<PlayerMove> player(String name) {
+        return moves().map((m) -> new PlayerMove(name, m));
     }
 
     Stream<Turn> turn( String player1, String player2 ) {
-        // No zip for Streams :-(
         Iterator<PlayerMove> p1 = player( player1 ).iterator() ;
         Iterator<PlayerMove> p2 = player( player2 ).iterator() ;
-        return Stream.generate( () -> new Turn( p1.next(), p2.next() ) ) ;
+        return Stream.generate( () -> new Turn( p1.next(), p2.next()));
     }
 
     Result result( Turn t ) {
@@ -90,19 +89,22 @@ public class RockPaperScissors {
                 Result.LOSE ;
     }
 
-    String resultMessage( Turn t, Result r ) {
+    // game logic based result
+    String resultMessage(Turn t, Result r) {
         return r == Result.DRAW ? "DRAW" :
             r == Result.WIN ? String.format( "%s wins", t.getP1().getPlayer()) :
-                String.format( "%s wins", t.getP2().getPlayer()) ;
+                String.format("%s wins", t.getP2().getPlayer()) ;
     }
 
-    String message( Turn t ) {
+    // display pretty result
+    String message(Turn t) {
         return String.format( "%s : %s", t.toString(), resultMessage( t, result( t ) ) ) ;
     }
 
-    Stream<String> game( String player1, String player2, int turns ) {
-        return turn( player1, player2 ).limit( turns )
-            .map( (t) -> message( t ) ) ;
+    //play game with two players and fixed number of turns
+    Stream<String> game(String player1, String player2, int turns) {
+        return turn(player1, player2).limit(turns)
+            .map( (t) -> message(t)) ;
     }
 
     public static void main( String[] args ) {
